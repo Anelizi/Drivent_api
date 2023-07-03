@@ -11,20 +11,20 @@ async function getAddressFromCEP(cep: string) {
   // FIXME: está com CEP fixo!
   const result = await request.get(`${process.env.VIA_CEP_API}/${cep}/json/`);
 
-  const { logradouro, complemento, localidade, uf, bairro } = result.data;
+  const viaCep = result.data as ViaCEPAddress;
 
-  if (!result.data) {
+  if (!result.data || result.data.erro) {
     throw notFoundError();
   }
 
   // FIXME: não estamos interessados em todos os campos
 
-  const address: ViaCEPAddress = {
-    logradouro: logradouro,
-    complemento: complemento,
-    bairro: bairro,
-    cidade: localidade,
-    uf: uf,
+  const address  = {
+    logradouro: viaCep.logradouro,
+    complemento: viaCep.complemento,
+    bairro: viaCep.bairro,
+    cidade: viaCep.localidade,
+    uf: viaCep.uf,
   };
 
   return address;
@@ -62,7 +62,7 @@ async function createOrUpdateEnrollmentWithAddress(params: CreateOrUpdateEnrollm
 
   try {
     await getAddressFromCEP(address.cep as string);
-  } catch (error) {
+  } catch {
     throw invalidDataError(["CEP invalid"]);
   }
 

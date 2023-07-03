@@ -7,8 +7,7 @@ export type ViaCEPAddress = {
   logradouro: string;
   complemento: string;
   bairro: string;
-  localidade?: string;
-  cidade: string;
+  localidade: string;
   uf: string;
 };
 
