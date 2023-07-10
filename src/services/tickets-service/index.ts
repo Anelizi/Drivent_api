@@ -26,16 +26,20 @@ export async function createTicket(userId: number, ticketTypeId: number) {
 
 export async function findTicket(userId: number) {
   const enrollment = await enrollmentRepository.findWithAddressByUserId(userId);
-  
-  if(!enrollment) throw notFoundError();
+
+  if (!enrollment) throw notFoundError();
 
   const result = await ticketRepository.findTicketById(enrollment.id);
 
-  if(!result) throw notFoundError();
+  if (!result) throw notFoundError();
 
   return result;
 }
 
-// export async function name(params:type) {
+export async function findTicketType() {
+  const result = await ticketRepository.findTicketType();
 
-// }
+  if (!result) throw notFoundError();
+
+  return result;
+}
