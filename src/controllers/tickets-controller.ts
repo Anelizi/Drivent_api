@@ -1,7 +1,7 @@
 import { Response } from 'express';
 import httpStatus from 'http-status';
 import { AuthenticatedRequest } from '@/middlewares';
-// import ticketsService from '@/services';
+import * as ticketsService from '@/services/tickets-service/index';
 
 export async function getTicketType(req: AuthenticatedRequest, res: Response) {
   const { userId } = req;
@@ -11,32 +11,42 @@ export async function getTicketType(req: AuthenticatedRequest, res: Response) {
 
     return res.status(httpStatus.OK).send();
   } catch (error) {
-    return res.sendStatus(httpStatus.NO_CONTENT);
+    if (error.name === 'NotFoundError') {
+      return res.send(httpStatus.NO_CONTENT);
+    }
+    return res.sendStatus(httpStatus.INTERNAL_SERVER_ERROR);
   }
 }
 
 export async function getTicket(req: AuthenticatedRequest, res: Response) {
-    // const { cep } = req.query as Record<string, string>;
-    
-    try {
-        // const address = await enrollmentsService.getAddressFromCEP(cep);
-        res.status(httpStatus.OK).send();
-    } catch (error) {
-        if (error.name === 'NotFoundError') {
-            return res.send(httpStatus.NO_CONTENT);
-        }
+  // const { cep } = req.query as Record<string, string>;
+
+  try {
+    // const address = await enrollmentsService.getAddressFromCEP(cep);
+    res.status(httpStatus.OK).send();
+  } catch (error) {
+    if (error.name === 'NotFoundError') {
+      return res.send(httpStatus.NO_CONTENT);
     }
+    return res.sendStatus(httpStatus.INTERNAL_SERVER_ERROR);
+  }
 }
 
 export async function postCreateTicket(req: AuthenticatedRequest, res: Response) {
-  try {
-    // await enrollmentsService.createOrUpdateEnrollmentWithAddress({
-    //   ...req.body,
-    //   userId: req.userId,
-    // });
+  const { userId } = req;
+  const { ticketTypeId } = req.body;
 
-    return res.sendStatus(httpStatus.OK);
-  } catch (error) {
+  if (!ticketTypeId) {
     return res.sendStatus(httpStatus.BAD_REQUEST);
+  }
+  
+  try {
+    const ticket = await ticketsService.createTicket(userId, ticketTypeId);
+
+    return res.status(httpStatus.CREATED).send(ticket);
+  } catch (error) {
+    if (error.name === 'NotFoundError') return res.send(httpStatus.NOT_FOUND);
+
+    return res.sendStatus(httpStatus.INTERNAL_SERVER_ERROR);
   }
 }
