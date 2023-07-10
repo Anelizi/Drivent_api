@@ -9,6 +9,6 @@ ticketsRouter
   .get('/types', getTicketType)
   .all('/*', authenticateToken)
   .get('/', getTicket)
-  .post('/', postCreateTicket);
+  .post('/', validateBody(ticketsSchema), postCreateTicket);
 
 export { ticketsRouter };
