@@ -18,6 +18,6 @@ export async function findTicketById(enrollmentId: number) {
   });
 }
 
-// export async function name(params:type) {
-
-// }
+export async function findTicket() {
+    return prisma.ticketType.findMany();
+}

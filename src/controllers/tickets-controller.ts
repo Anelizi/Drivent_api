@@ -19,14 +19,15 @@ export async function getTicketType(req: AuthenticatedRequest, res: Response) {
 }
 
 export async function getTicket(req: AuthenticatedRequest, res: Response) {
-  // const { cep } = req.query as Record<string, string>;
+  const {userId} = req;
 
   try {
-    // const address = await enrollmentsService.getAddressFromCEP(cep);
-    res.status(httpStatus.OK).send();
+    const tickets = await ticketsService.findTicket(userId);
+
+    res.status(httpStatus.OK).send(tickets);
   } catch (error) {
     if (error.name === 'NotFoundError') {
-      return res.send(httpStatus.NO_CONTENT);
+      return res.send(httpStatus.NOT_FOUND);
     }
     return res.sendStatus(httpStatus.INTERNAL_SERVER_ERROR);
   }
