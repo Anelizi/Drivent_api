@@ -1,7 +1,15 @@
 import { prisma } from '@/config';
 import { PaymentParams } from '@/protocols';
 
-export async function createPayments(ticketId: number, params: PaymentParams) {
+async function findPaymentByTicketId(ticketId: number) {
+  return prisma.payment.findFirst({
+    where: {
+      ticketId,
+    },
+  });
+}
+
+async function createPayment(ticketId: number, params: PaymentParams) {
   return prisma.payment.create({
     data: {
       ticketId,
@@ -10,10 +18,4 @@ export async function createPayments(ticketId: number, params: PaymentParams) {
   });
 }
 
-export async function findPaymentById(ticketId: number) {
-  return prisma.payment.findFirst({
-    where: {
-      ticketId,
-    },
-  });
-}
+export default { findPaymentByTicketId, createPayment };

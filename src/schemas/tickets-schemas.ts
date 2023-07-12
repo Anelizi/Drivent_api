@@ -1,6 +1,6 @@
-import Joi from "joi";
-import { TicketBody } from "@/protocols";
+import Joi from 'joi';
+import { InputTicketBody } from '@/protocols';
 
-export const ticketsSchema = Joi.object<TicketBody>({
-    ticketTypeId: Joi.number().required(),
-})
+export const ticketsSchema = Joi.object<InputTicketBody>({
+  ticketTypeId: Joi.number().required(),
+});
