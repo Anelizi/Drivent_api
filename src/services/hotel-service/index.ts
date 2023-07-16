@@ -10,9 +10,13 @@ export async function hotelsList(userId: number) {
 
   const ticket = await ticketsRepository.findTicketByEnrollmentId(enrollment.id);
 
-  if (!ticket || ticket.status === 'RESERVED' || !ticket.TicketType.includesHotel || ticket.TicketType.isRemote) {
-    throw notFoundError();
-  }
+  if (!ticket) throw notFoundError();
+
+  if (ticket.status === 'RESERVED') throw notFoundError();
+
+  if (!ticket.TicketType.includesHotel) throw notFoundError();
+
+  if (ticket.TicketType.isRemote) throw notFoundError();
 }
 
 export async function getHotel(userId: number) {
