@@ -12,10 +12,10 @@ export async function getHotel(req: AuthenticatedRequest, res: Response) {
     return res.status(httpStatus.OK).send(hotel);
   } catch (error) {
     if (error.name === 'NotFoundError') {
-      return res.sendStatus(httpStatus.OK);
+        return res.sendStatus(httpStatus.PAYMENT_REQUIRED);
+      }
+      return res.sendStatus(httpStatus.NOT_FOUND);
     }
-    return res.sendStatus(httpStatus.PAYMENT_REQUIRED);
-  }
 }
 
 export async function getHotelId(req: AuthenticatedRequest, res: Response) {
@@ -30,6 +30,6 @@ export async function getHotelId(req: AuthenticatedRequest, res: Response) {
     if (error.name === 'NotFoundError') {
       return res.sendStatus(httpStatus.PAYMENT_REQUIRED);
     }
-    return res.sendStatus(httpStatus.BAD_REQUEST);
+    return res.sendStatus(httpStatus.NOT_FOUND);
   }
 }
