@@ -19,8 +19,11 @@ export async function getHotel(req: AuthenticatedRequest, res: Response) {
 }
 
 export async function getHotelId(req: AuthenticatedRequest, res: Response) {
+    const { userId } = req;
+    const { hotelId } = req.params;
+    console.log(hotelId);
     try {
-    //   const ticketTypes = await ticketService.getTicketType();
+    //   const ticketTypes = await hotelServer.getTicketType();
     //   return res.status(httpStatus.OK).send(ticketTypes);
     } catch (e) {
       return res.sendStatus(httpStatus.NO_CONTENT);

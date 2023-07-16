@@ -19,5 +19,18 @@ export async function getHotel(userId: number) {
     await hotelsList(userId);
 
     const hotel = await hotelRepository.findHotel();
+
+    if(!hotel) throw notFoundError();
+    
+    return hotel;
+}
+
+export async function getHotelId(userId: number, hotelId: number) {
+    await hotelsList(userId);
+
+    const hotel = await hotelRepository.findHotelById(hotelId);
+
+    if(!hotel) throw notFoundError();
+
     return hotel;
 }
