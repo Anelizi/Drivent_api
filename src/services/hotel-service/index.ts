@@ -2,6 +2,7 @@ import { notFoundError } from '@/errors';
 import enrollmentRepository from '@/repositories/enrollment-repository';
 import ticketsRepository from '@/repositories/tickets-repository';
 import * as hotelRepository from '@/repositories/hotel-repository/index';
+import { hotelError } from '@/errors/cannot-hotel-error';
 
 export async function hotelsList(userId: number) {
   const enrollment = await enrollmentRepository.findWithAddressByUserId(userId);
@@ -10,13 +11,13 @@ export async function hotelsList(userId: number) {
 
   const ticket = await ticketsRepository.findTicketByEnrollmentId(enrollment.id);
 
-  if (!ticket) throw notFoundError();
+  if (!ticket) throw hotelError();
 
-  if (ticket.status === 'RESERVED') throw notFoundError();
+  if (ticket.status === 'RESERVED') throw hotelError();
 
-  if (!ticket.TicketType.includesHotel) throw notFoundError();
+  if (!ticket.TicketType.includesHotel) throw hotelError();
 
-  if (ticket.TicketType.isRemote) throw notFoundError();
+  if (ticket.TicketType.isRemote) throw hotelError();
 }
 
 export async function getHotel(userId: number) {
