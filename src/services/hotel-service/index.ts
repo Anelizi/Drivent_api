@@ -11,7 +11,7 @@ export async function hotelsList(userId: number) {
 
   const ticket = await ticketsRepository.findTicketByEnrollmentId(enrollment.id);
 
-  if (!ticket) throw hotelError();
+  if (!ticket) throw notFoundError();
 
   if (ticket.status === 'RESERVED') throw hotelError();
 
