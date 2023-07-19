@@ -1,41 +1,37 @@
-import { AuthenticatedRequest } from '@/middlewares';
-import { Response } from 'express';
 import httpStatus from 'http-status';
-import * as hotelServer from '@/services/hotel-service/index';
+import { Response } from 'express';
+import { AuthenticatedRequest } from '@/middlewares';
+import hotelsService from '@/services/hotels-service';
 
-export async function getHotel(req: AuthenticatedRequest, res: Response) {
+export async function getHotels(req: AuthenticatedRequest, res: Response) {
   const { userId } = req;
-  console.log(userId);
-  try {
-    const hotel = await hotelServer.getHotel(Number(userId));
 
-    return res.status(httpStatus.OK).send(hotel);
+  try {
+    const hotels = await hotelsService.getHotels(userId);
+    return res.status(httpStatus.OK).send(hotels);
   } catch (error) {
     if (error.name === 'NotFoundError') {
       return res.sendStatus(httpStatus.NOT_FOUND);
     }
-    if (error.name === 'HotelError') {
-        return res.sendStatus(httpStatus.PAYMENT_REQUIRED);
-      }
-    return res.sendStatus(httpStatus.BAD_REQUEST);
-    }
+    return res.sendStatus(httpStatus.PAYMENT_REQUIRED);
+  }
 }
 
-export async function getHotelId(req: AuthenticatedRequest, res: Response) {
+export async function getHotelsWithRooms(req: AuthenticatedRequest, res: Response) {
   const { userId } = req;
   const { hotelId } = req.params;
-  console.log(hotelId);
-  try {
-    const hotel = await hotelServer.getHotelId(Number(userId), Number(hotelId));
 
-      return res.status(httpStatus.OK).send(hotel);
+  try {
+    const hotels = await hotelsService.getHotelsWithRooms(userId, Number(hotelId));
+
+    return res.status(httpStatus.OK).send(hotels);
   } catch (error) {
     if (error.name === 'NotFoundError') {
       return res.sendStatus(httpStatus.NOT_FOUND);
     }
-    if (error.name === 'HotelError') {
-        return res.sendStatus(httpStatus.PAYMENT_REQUIRED);
-      }
+    if (error.name === 'CannotListHotelsError') {
+      return res.sendStatus(httpStatus.PAYMENT_REQUIRED);
+    }
     return res.sendStatus(httpStatus.BAD_REQUEST);
   }
 }
