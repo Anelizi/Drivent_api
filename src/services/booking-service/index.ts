@@ -4,7 +4,6 @@ import bookingRepository from '@/repositories/booking-repository';
 import enrollmentRepository from '@/repositories/enrollment-repository';
 import roomRepository from '@/repositories/room-repository';
 import ticketsRepository from '@/repositories/tickets-repository';
-import httpStatus from 'http-status';
 
 async function findBooking(userId: number) {
   const booking = await bookingRepository.findByUserId(userId);
@@ -42,9 +41,26 @@ async function postBooking(userId: number, roomId: number) {
   return bookingRepository.createBooking({ roomId, userId });
 }
 
+async function putBooking(userId: number, roomId: number) {
+  if (!roomId) throw cannotEnrollBeforeStartDateError();
+
+  await listRoomValid(roomId);
+
+  const booking = await bookingRepository.findByUserId(userId);
+
+  if (!booking || booking.userId !== userId) throw cannotBookingError();
+
+  return bookingRepository.changeBooking({
+    id: booking.id,
+    roomId,
+    userId,
+  });
+}
+
 const bookingService = {
   findBooking,
   postBooking,
+  putBooking,
 };
 
 export default bookingService;
