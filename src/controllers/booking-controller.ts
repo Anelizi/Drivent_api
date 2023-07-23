@@ -45,7 +45,7 @@ export async function postBooking(req: AuthenticatedRequest, res: Response) {
 
 export async function putBooking(req: AuthenticatedRequest, res: Response) {
   const { userId } = req;
-  const { bookingId } = req.body;
+  const { bookingId } = req.params;
   const { roomId } = req.body;
 
   if (!bookingId) return res.sendStatus(httpStatus.BAD_REQUEST);
